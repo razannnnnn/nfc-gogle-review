@@ -1,7 +1,7 @@
-import { getCard } from "@/lib/db";
+import { getCard, incrementScan } from "@/lib/db";
 import ActivationForm from "@/components/ActivationForm";
-import RedirectToReview from "@/components/RedirectToReview";
 import { sanitizeReviewUrl } from "@/lib/google-review";
+import { redirect } from "next/navigation";
 import { XCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -31,8 +31,13 @@ export default async function KartuPage({ params, searchParams }) {
   }
 
   if (card.status === "aktif") {
+    // Catat statistik scan secara otomatis di server
+    await incrementScan(id, source).catch(() => {});
+
     const finalUrl = sanitizeReviewUrl(card.link_google_review);
-    return <RedirectToReview id={id} url={finalUrl} namaToko={card.nama_toko} source={source} />;
+
+    // Redirect HTTP Server-Side secara LANGSUNG (0 detik, tanpa tombol/tampilan perantara)
+    redirect(finalUrl);
   }
 
   return <ActivationForm id={id} />;
