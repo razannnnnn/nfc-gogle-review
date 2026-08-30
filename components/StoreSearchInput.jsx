@@ -81,7 +81,7 @@ function AutocompleteWithHook({
         </label>
         <div className="relative mt-1">
           <input
-            className="input-field pr-10"
+            className="input-field input-field-has-icon-right"
             placeholder="Cari nama toko Anda di Google Maps…"
             value={value}
             onChange={handleInput}
@@ -91,7 +91,7 @@ function AutocompleteWithHook({
             disabled={!ready}
             required
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
             {!ready ? (
               <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
             ) : (

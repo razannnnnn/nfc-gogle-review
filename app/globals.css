@@ -178,6 +178,14 @@ body {
     box-shadow var(--transition-fast);
 }
 
+.input-field-has-icon-left {
+  padding-left: 2.5rem !important;
+}
+
+.input-field-has-icon-right {
+  padding-right: 2.5rem !important;
+}
+
 .input-field::placeholder {
   color: var(--color-ink-muted);
 }

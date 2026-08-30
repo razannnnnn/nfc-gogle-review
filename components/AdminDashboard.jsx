@@ -222,9 +222,9 @@ export default function AdminDashboard({ initialCards }) {
               placeholder="Cari ID kartu, nama toko, no HP owner…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="input-field pl-9 text-xs"
+              className="input-field input-field-has-icon-left text-xs"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
