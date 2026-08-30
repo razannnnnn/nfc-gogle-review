@@ -4,6 +4,8 @@ import { useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { gooeyToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { Save, Nfc, QrCode, LogOut } from "lucide-react";
+import StoreSearchInput from "./StoreSearchInput";
 
 function CardEditor({ card, onSaved }) {
   const [namaToko, setNamaToko] = useState(card.nama_toko || "");
@@ -12,7 +14,6 @@ function CardEditor({ card, onSaved }) {
   const saveTimerRef = useRef(null);
 
   const handleSave = useCallback(async () => {
-    // Debounce: prevent double-submit
     if (saveTimerRef.current) return;
     saveTimerRef.current = setTimeout(() => {
       saveTimerRef.current = null;
@@ -60,49 +61,38 @@ function CardEditor({ card, onSaved }) {
         </span>
       </div>
 
-      <div className="mt-4 space-y-3">
-        <div>
-          <label className="text-xs font-medium text-slate-500">
-            Nama toko
-          </label>
-          <input
-            className="input-field mt-1"
-            value={namaToko}
-            onChange={(e) => setNamaToko(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="text-xs font-medium text-slate-500">
-            Link Google Maps toko
-          </label>
-          <input
-            className="input-field mt-1"
-            value={linkMaps}
-            onChange={(e) => setLinkMaps(e.target.value)}
-          />
-        </div>
+      <div className="mt-4">
+        <StoreSearchInput
+          namaToko={namaToko}
+          onChangeNamaToko={setNamaToko}
+          linkMaps={linkMaps}
+          onChangeLinkMaps={setLinkMaps}
+        />
       </div>
 
       <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-2">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="btn-primary !py-2 !px-4 text-sm"
+          className="btn-primary !py-2 !px-4 text-sm inline-flex items-center justify-center gap-1.5"
         >
+          <Save className="w-4 h-4" />
           {saving ? "Menyimpan…" : "Simpan Perubahan"}
         </button>
         <Link
           href={`/dashboard/tulis-ulang/${card.id}`}
-          className="btn-secondary !py-2 !px-4 text-sm"
+          className="btn-secondary !py-2 !px-4 text-sm inline-flex items-center justify-center gap-1.5"
         >
+          <Nfc className="w-4 h-4 text-emerald-600" />
           Tulis Ulang Chip NFC
         </Link>
         <a
           href={`/api/qr/${card.id}`}
           target="_blank"
           rel="noreferrer"
-          className="btn-secondary !py-2 !px-4 text-sm"
+          className="btn-secondary !py-2 !px-4 text-sm inline-flex items-center justify-center gap-1.5"
         >
+          <QrCode className="w-4 h-4 text-slate-600" />
           Download QR
         </a>
       </div>
@@ -133,8 +123,9 @@ export default function OwnerDashboard({ initialCards }) {
           </h1>
           <button
             onClick={handleLogout}
-            className="btn-secondary !py-2 !px-4 text-sm"
+            className="btn-secondary !py-2 !px-4 text-sm inline-flex items-center gap-1.5"
           >
+            <LogOut className="w-4 h-4 text-slate-500" />
             Keluar
           </button>
         </div>

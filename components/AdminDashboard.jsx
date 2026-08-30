@@ -4,6 +4,7 @@ import { useState, useCallback, memo } from "react";
 import Link from "next/link";
 import { gooeyToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { BarChart2, Plus, LogOut, Nfc, QrCode } from "lucide-react";
 
 const StatusBadge = memo(function StatusBadge({ status }) {
   const aktif = status === "aktif";
@@ -39,9 +40,10 @@ function MobileCard({ card }) {
         </p>
       )}
 
-      <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
+      <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+        <BarChart2 className="w-3.5 h-3.5 text-slate-400" />
         <span>
-          📊 {card.jumlah_scan} scan
+          {card.jumlah_scan} scan
           <span className="text-slate-400 ml-1">
             (NFC {card.jumlah_scan_nfc} · QR {card.jumlah_scan_qr})
           </span>
@@ -57,6 +59,7 @@ function MobileCard({ card }) {
           href={`/admin/tulis/${card.id}`}
           className="btn-primary !py-1.5 !px-3 text-xs flex-1"
         >
+          <Nfc className="w-3.5 h-3.5 mr-1 inline" />
           Tulis NFC
         </Link>
         <a
@@ -65,6 +68,7 @@ function MobileCard({ card }) {
           rel="noreferrer"
           className="btn-secondary !py-1.5 !px-3 text-xs flex-1"
         >
+          <QrCode className="w-3.5 h-3.5 mr-1 inline" />
           Lihat QR
         </a>
       </div>
@@ -126,9 +130,11 @@ export default function AdminDashboard({ initialCards }) {
               disabled={creating}
               className="btn-primary"
             >
-              {creating ? "Membuat…" : "+ Buat Kartu Baru"}
+              <Plus className="w-4 h-4 mr-1 inline" />
+              {creating ? "Membuat…" : "Buat Kartu Baru"}
             </button>
             <button onClick={handleLogout} className="btn-secondary">
+              <LogOut className="w-4 h-4 mr-1 inline text-slate-500" />
               Keluar
             </button>
           </div>
@@ -174,16 +180,18 @@ export default function AdminDashboard({ initialCards }) {
                   <td className="text-right space-x-3">
                     <Link
                       href={`/admin/tulis/${c.id}`}
-                      className="text-emerald-600 font-medium hover:underline"
+                      className="text-emerald-600 font-medium hover:underline inline-flex items-center gap-1"
                     >
+                      <Nfc className="w-3.5 h-3.5" />
                       Tulis NFC
                     </Link>
                     <a
                       href={`/api/qr/${c.id}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-slate-500 font-medium hover:underline"
+                      className="text-slate-500 font-medium hover:underline inline-flex items-center gap-1"
                     >
+                      <QrCode className="w-3.5 h-3.5" />
                       Lihat QR
                     </a>
                   </td>

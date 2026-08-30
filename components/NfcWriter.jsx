@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { gooeyToast } from "@/lib/toast";
+import { AlertTriangle, CheckCircle2, XCircle, Radio } from "lucide-react";
 
 /**
  * Komponen tulis chip NFC lewat Web NFC API (NDEFReader).
@@ -11,14 +12,9 @@ import { gooeyToast } from "@/lib/toast";
  * Web NFC API untuk MENULIS hanya berjalan di Chrome for Android (PRD 5.1 & 6).
  */
 
-// Kenapa Web NFC bisa dianggap "tidak didukung" walau HP-nya support NFC:
-// (dicek berurutan supaya pesan yang ditampilkan sespesifik mungkin)
 function diagnoseUnsupported() {
   if (typeof window === "undefined") return null;
 
-  // 1) Web NFC WAJIB secure context (HTTPS, atau localhost saat dev).
-  //    Diakses lewat IP lokal via HTTP (mis. http://192.168.x.x:3000)
-  //    TIDAK dihitung secure context walau device & browsernya sebenarnya support.
   if (!window.isSecureContext) {
     return {
       code: "not_secure_context",
@@ -28,9 +24,6 @@ function diagnoseUnsupported() {
     };
   }
 
-  // 2) API benar-benar tidak ada di browser ini — kemungkinan besar
-  //    bukan Chrome Android (Samsung Internet, Firefox, in-app browser
-  //    Instagram/WhatsApp, dsb), atau versi Chrome terlalu lama.
   if (!("NDEFReader" in window)) {
     const ua = navigator.userAgent || "";
     const isAndroid = /Android/i.test(ua);
@@ -62,11 +55,11 @@ function diagnoseUnsupported() {
     };
   }
 
-  return null; // NDEFReader ada — dianggap didukung
+  return null;
 }
 
 export default function NfcWriter({ id, backHref, backLabel }) {
-  const [supported, setSupported] = useState(null); // null = belum dicek
+  const [supported, setSupported] = useState(null);
   const [reason, setReason] = useState(null);
   const [writing, setWriting] = useState(false);
   const [lastResult, setLastResult] = useState(null); // 'success' | 'error' | null
@@ -137,13 +130,13 @@ export default function NfcWriter({ id, backHref, backLabel }) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6">
         <div className="card-shell max-w-sm w-full p-8 text-center">
-          <div className="mx-auto h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center text-2xl">
-            ⚠️
+          <div className="mx-auto h-14 w-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-2">
+            <AlertTriangle className="w-7 h-7" />
           </div>
-          <h1 className="mt-4 text-lg font-bold text-slate-900">
+          <h1 className="mt-2 text-lg font-bold text-slate-900">
             {reason?.title || "Perangkat tidak didukung"}
           </h1>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-slate-600 leading-relaxed">
             {reason?.detail || (
               <>
                 Menulis chip NFC lewat web hanya bisa dilakukan di{" "}
@@ -168,19 +161,21 @@ export default function NfcWriter({ id, backHref, backLabel }) {
     <main className="min-h-screen flex items-center justify-center px-6">
       <div className="card-shell max-w-sm w-full p-8 text-center">
         <div
-          className={`mx-auto h-16 w-16 rounded-full flex items-center justify-center text-3xl ${
+          className={`mx-auto h-16 w-16 rounded-full flex items-center justify-center ${
             lastResult === "success"
-              ? "bg-emerald-100"
+              ? "bg-emerald-100 text-emerald-600"
               : lastResult === "error"
-                ? "bg-red-100"
-                : "bg-slate-100"
-          }`}
+                ? "bg-red-100 text-red-600"
+                : "bg-emerald-50 text-emerald-600"
+          } ${writing ? "animate-pulse-glow" : ""}`}
         >
-          {lastResult === "success"
-            ? "✅"
-            : lastResult === "error"
-              ? "❌"
-              : "📶"}
+          {lastResult === "success" ? (
+            <CheckCircle2 className="w-8 h-8" />
+          ) : lastResult === "error" ? (
+            <XCircle className="w-8 h-8" />
+          ) : (
+            <Radio className={`w-8 h-8 ${writing ? "animate-spin" : ""}`} />
+          )}
         </div>
         <h1 className="mt-4 text-lg font-bold text-slate-900">
           Tulis Chip NFC

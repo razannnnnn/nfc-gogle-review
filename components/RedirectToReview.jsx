@@ -12,19 +12,30 @@ export default function RedirectToReview({ id, url, namaToko, source }) {
       keepalive: true,
     }).catch(() => {});
 
+    // Redirection ke URL direct 5-star writereview
     window.location.replace(url);
   }, [id, url, source]);
 
   return (
     <main className="page-center">
-      <div className="text-center">
-        <div className="mx-auto h-10 w-10 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin" />
-        <p className="mt-4 text-slate-600 text-sm">
-          Mengarahkan ke halaman ulasan{namaToko ? ` ${namaToko}` : ""}…
-        </p>
-        <a href={url} className="mt-3 inline-block text-xs text-emerald-600 underline hover:text-emerald-700 transition-colors">
-          Klik di sini kalau tidak otomatis terbuka
-        </a>
+      <div className="text-center p-6 max-w-sm w-full">
+        <div className="mx-auto h-12 w-12 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin mb-4" />
+        <h2 className="text-base font-bold text-slate-900">
+          Mengarahkan ke Form Ulasan Bintang 5…
+        </h2>
+        {namaToko && (
+          <p className="mt-1 text-sm text-slate-600 font-medium">
+            {namaToko}
+          </p>
+        )}
+        <div className="mt-5">
+          <a
+            href={url}
+            className="btn-primary !py-2.5 !px-5 text-sm inline-block w-full"
+          >
+            Buka Form Ulasan
+          </a>
+        </div>
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 import { getCard } from "@/lib/db";
 import ActivationForm from "@/components/ActivationForm";
 import RedirectToReview from "@/components/RedirectToReview";
+import { XCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,8 @@ export default async function KartuPage({ params, searchParams }) {
     return (
       <main className="page-center">
         <div className="card-shell max-w-sm w-full p-7 sm:p-8 text-center">
-          <div className="mx-auto h-14 w-14 rounded-full bg-red-100 flex items-center justify-center text-3xl mb-4">
-            ❌
+          <div className="mx-auto h-14 w-14 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-4">
+            <XCircle className="w-8 h-8" />
           </div>
           <h1 className="text-lg font-bold text-slate-900">Kartu tidak ditemukan</h1>
           <p className="mt-2 text-sm text-slate-500 leading-relaxed">

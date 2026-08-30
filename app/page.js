@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CreditCard, Zap, Star } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -92,29 +93,34 @@ export default function LandingPage() {
         <div className="feature-grid stagger-children">
           {[
             {
-              icon: "💳",
+              icon: CreditCard,
               title: "1. Terima kartu",
               desc: "Kartu fisik NFC/QR dengan ID unik, siap dipasang di meja kasir.",
             },
             {
-              icon: "⚡",
+              icon: Zap,
               title: "2. Aktivasi sendiri",
               desc: "Tap/scan pertama kali membuka form aktivasi. Isi nama toko & link Google Review.",
             },
             {
-              icon: "⭐",
+              icon: Star,
               title: "3. Pelanggan review",
               desc: "Setelah aktif, setiap tap/scan langsung membuka halaman tulis ulasan toko Anda.",
             },
-          ].map((s) => (
-            <div key={s.title} className="card-shell p-6 animate-fade-in-up">
-              <div className="text-3xl mb-3">{s.icon}</div>
-              <h3 className="font-semibold text-slate-900">{s.title}</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                {s.desc}
-              </p>
-            </div>
-          ))}
+          ].map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.title} className="card-shell p-6 animate-fade-in-up">
+                <div className="h-12 w-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+                  <Icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-semibold text-slate-900">{s.title}</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                  {s.desc}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 

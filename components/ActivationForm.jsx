@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { gooeyToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
+import StoreSearchInput from "./StoreSearchInput";
 
 export default function ActivationForm({ id }) {
   const router = useRouter();
@@ -16,18 +18,30 @@ export default function ActivationForm({ id }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
 
+    if (!namaToko.trim() || !kontak.trim()) {
+      gooeyToast.error("Nama toko dan kontak wajib diisi.");
+      return;
+    }
+
+    setLoading(true);
     const toastId = gooeyToast("Mengaktivasi kartu…");
+
+    // Jika linkMaps belum diisi manual/autocomplete, buatkan link pencarian Google Maps otomatis
+    const finalLinkMaps =
+      linkMaps.trim() ||
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        namaToko.trim()
+      )}`;
 
     try {
       const res = await fetch(`/api/cards/${id}/activate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nama_toko: namaToko,
-          link_maps: linkMaps,
-          owner_kontak: kontak,
+          nama_toko: namaToko.trim(),
+          link_maps: finalLinkMaps,
+          owner_kontak: kontak.trim(),
           honeypot,
         }),
       });
@@ -65,8 +79,8 @@ export default function ActivationForm({ id }) {
           animate={{ opacity: 1, y: 0 }}
           className="card-shell max-w-md w-full p-7 sm:p-8 text-center"
         >
-          <div className="mx-auto h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center text-3xl animate-pulse-glow">
-            ✅
+          <div className="mx-auto h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 animate-pulse-glow">
+            <CheckCircle2 className="w-8 h-8" />
           </div>
           <h1 className="mt-4 text-xl font-bold text-slate-900">Kartu aktif!</h1>
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">
@@ -86,7 +100,14 @@ export default function ActivationForm({ id }) {
   }
 
   return (
-    <main className="page-center" style={{ padding: "1rem", alignItems: "flex-start", paddingTop: "clamp(2rem, 8vh, 6rem)" }}>
+    <main
+      className="page-center"
+      style={{
+        padding: "1rem",
+        alignItems: "flex-start",
+        paddingTop: "clamp(2rem, 8vh, 6rem)",
+      }}
+    >
       <motion.form
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,39 +116,17 @@ export default function ActivationForm({ id }) {
       >
         <h1 className="text-xl font-bold text-slate-900">Aktivasi Kartu Baru</h1>
         <p className="mt-1 text-sm text-slate-500 leading-relaxed">
-          Kartu ini belum aktif. Isi data toko Anda supaya pelanggan bisa
-          langsung diarahkan ke halaman ulasan Google Maps saat tap/scan.
+          Ketik nama toko Anda di bawah. Pilih lokasi dari saran Google Maps yang
+          muncul secara otomatis.
         </p>
 
         <div className="mt-6 space-y-4">
-          <div>
-            <label className="text-sm font-medium text-slate-700">Nama toko</label>
-            <input
-              className="input-field mt-1"
-              placeholder="Contoh: Kopi Senja Kediri"
-              value={namaToko}
-              onChange={(e) => setNamaToko(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-700">
-              Link Google Maps toko
-            </label>
-            <input
-              className="input-field mt-1"
-              placeholder="Tempel link share dari Google Maps"
-              value={linkMaps}
-              onChange={(e) => setLinkMaps(e.target.value)}
-              required
-            />
-            <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-              Buka Google Maps → cari toko Anda → Bagikan → salin link, lalu
-              tempel di sini. Tidak perlu link &ldquo;tulis ulasan&rdquo; khusus, sistem
-              akan konversi otomatis.
-            </p>
-          </div>
+          <StoreSearchInput
+            namaToko={namaToko}
+            onChangeNamaToko={setNamaToko}
+            linkMaps={linkMaps}
+            onChangeLinkMaps={setLinkMaps}
+          />
 
           <div>
             <label className="text-sm font-medium text-slate-700">
