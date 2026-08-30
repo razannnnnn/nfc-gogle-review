@@ -336,10 +336,15 @@ export default function AdminDashboard({ initialCards }) {
 
         {/* ─── Mobile Card List (CRUD) ─── */}
         <div className="admin-card-list mt-6 flex-col gap-3 stagger-children sm:hidden">
+          {filteredCards.length === 0 && (
+            <div className="card-shell p-6 text-center text-slate-400 text-sm">
+              Tidak ada kartu yang cocok dengan pencarian.
+            </div>
+          )}
           {filteredCards.map((card) => (
             <div key={card.id} className="card-shell p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-slate-800">{card.id}</span>
+                <span className="font-mono font-bold text-slate-800 text-sm">{card.id}</span>
                 <StatusBadge status={card.status} />
               </div>
 
@@ -352,22 +357,47 @@ export default function AdminDashboard({ initialCards }) {
                 )}
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-2">
-                <span>{card.jumlah_scan} total scan</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => openEditModal(card)}
-                    className="text-emerald-600 font-semibold"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => setDeletingCard(card)}
-                    className="text-red-500 font-semibold"
-                  >
-                    Hapus
-                  </button>
-                </div>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <BarChart2 className="w-3.5 h-3.5 text-slate-400" />
+                <span>
+                  {card.jumlah_scan} total scan
+                  <span className="text-slate-400 ml-1">
+                    (NFC {card.jumlah_scan_nfc} · QR {card.jumlah_scan_qr})
+                  </span>
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+                <Link
+                  href={`/admin/tulis/${card.id}`}
+                  className="btn-primary !py-1.5 !px-3 text-xs flex-1 justify-center"
+                >
+                  <Nfc className="w-3.5 h-3.5 mr-1 inline" />
+                  Tulis NFC
+                </Link>
+                <a
+                  href={`/api/qr/${card.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-secondary !py-1.5 !px-3 text-xs flex-1 justify-center"
+                >
+                  <QrCode className="w-3.5 h-3.5 mr-1 inline" />
+                  Lihat QR
+                </a>
+                <button
+                  onClick={() => openEditModal(card)}
+                  className="btn-secondary !py-1.5 !px-2.5 text-xs text-emerald-600 hover:text-emerald-700"
+                  title="Edit Kartu"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setDeletingCard(card)}
+                  className="btn-secondary !py-1.5 !px-2.5 text-xs text-red-500 hover:text-red-600"
+                  title="Hapus Kartu"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           ))}
