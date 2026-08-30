@@ -1,6 +1,7 @@
 import { getCard } from "@/lib/db";
 import ActivationForm from "@/components/ActivationForm";
 import RedirectToReview from "@/components/RedirectToReview";
+import { sanitizeReviewUrl } from "@/lib/google-review";
 import { XCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +31,8 @@ export default async function KartuPage({ params, searchParams }) {
   }
 
   if (card.status === "aktif") {
-    return <RedirectToReview id={id} url={card.link_google_review} namaToko={card.nama_toko} source={source} />;
+    const finalUrl = sanitizeReviewUrl(card.link_google_review);
+    return <RedirectToReview id={id} url={finalUrl} namaToko={card.nama_toko} source={source} />;
   }
 
   return <ActivationForm id={id} />;
