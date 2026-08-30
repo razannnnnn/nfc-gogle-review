@@ -13,8 +13,7 @@ sini, tapi seluruh fitur MVP di PRD sudah diimplementasikan).
   `lib/toast.js` (lihat catatan di bawah)
 - **Web NFC API** (`NDEFReader`) — native browser API, tanpa library tambahan
 - **qrcode** untuk generate QR code PNG
-- Penyimpanan data: file JSON lokal (`data/db.json`) — lihat catatan migrasi
-  ke Vercel KV di bawah
+- **Penyimpanan data**: MongoDB Atlas (`mongodb+srv://...`) via Mongoose dengan fallback otomatis
 
 ## Menjalankan secara lokal
 

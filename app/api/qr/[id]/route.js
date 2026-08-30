@@ -21,7 +21,7 @@ export async function GET(req, { params }) {
     headers: {
       "Content-Type": "image/png",
       "Content-Disposition": `inline; filename="reviewscan-${id}.png"`,
-      "Cache-Control": "no-store",
+      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
     },
   });
 }
