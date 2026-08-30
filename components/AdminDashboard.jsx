@@ -406,8 +406,8 @@ export default function AdminDashboard({ initialCards }) {
 
       {/* ─── MODAL EDIT KARTU (UPDATE) ─── */}
       {editingCard && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="card-shell max-w-md w-full p-6 space-y-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl border border-slate-200 max-w-md w-full p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="font-bold text-slate-900 flex items-center gap-2">
                 <Pencil className="w-4 h-4 text-emerald-600" />
@@ -475,8 +475,8 @@ export default function AdminDashboard({ initialCards }) {
 
       {/* ─── MODAL KONFIRMASI HAPUS (DELETE) ─── */}
       {deletingCard && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="card-shell max-w-sm w-full p-6 text-center space-y-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl border border-slate-200 max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
             <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
               <AlertCircle className="w-6 h-6" />
             </div>

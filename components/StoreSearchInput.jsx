@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Store, CheckCircle2, Loader2, Search, Link as LinkIcon, AlertCircle } from "lucide-react";
+import { MapPin, Store, Loader2, Search, Link as LinkIcon, AlertCircle } from "lucide-react";
 
 const MIN_INPUT_LENGTH = 2;
-const DEBOUNCE_DELAY_MS = 5000; // Wait 5 seconds after user stops typing
+const DEBOUNCE_DELAY_MS = 5000; // 5 Seconds Debounce Timer
 
 export default function StoreSearchInput({
   namaToko,
@@ -15,7 +15,6 @@ export default function StoreSearchInput({
   const [inputValue, setInputValue] = useState(namaToko || "");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [timerCountdown, setTimerCountdown] = useState(0);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [manualMode, setManualMode] = useState(false);
@@ -23,11 +22,10 @@ export default function StoreSearchInput({
   // Session Token, Timer, dan AbortController Refs
   const sessionTokenRef = useRef(null);
   const debounceTimerRef = useRef(null);
-  const countdownIntervalRef = useRef(null);
   const abortControllerRef = useRef(null);
   const wrapperRef = useRef(null);
 
-  // Synchronize external prop changes (e.g. from modal edit mode)
+  // Synchronize external prop changes
   useEffect(() => {
     if (namaToko !== undefined && namaToko !== inputValue) {
       setInputValue(namaToko);
@@ -62,15 +60,10 @@ export default function StoreSearchInput({
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
-    if (countdownIntervalRef.current) {
-      clearInterval(countdownIntervalRef.current);
-      countdownIntervalRef.current = null;
-    }
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    setTimerCountdown(0);
   }, []);
 
   // Memanggil API Google Places Autocomplete (New) setelah 5 detik hening
@@ -128,10 +121,10 @@ export default function StoreSearchInput({
     onChangeNamaToko(val);
     setError(null);
 
-    // 1. Reset timer dan batalkan request lama yang belum selesai
+    // 1. Reset timer dan batalkan request lama
     clearSearchState();
 
-    // 2. Jika input kurang dari minimum (2 karakter), bersihkan hasil & sembunyikan dropdown
+    // 2. Jika input kurang dari minimum 2 karakter, bersihkan hasil
     if (!val || val.trim().length < MIN_INPUT_LENGTH) {
       setSuggestions([]);
       setOpen(false);
@@ -139,29 +132,16 @@ export default function StoreSearchInput({
       return;
     }
 
-    // 3. Set status loading & aktifkan timer debounce 5 DETIK
+    // 3. Set status loading & timer debounce 5 detik (tanpa teks countdown)
     setLoading(true);
     setOpen(true);
-    setTimerCountdown(5);
 
-    // Interval hitung mundur visual 5s untuk UX pengguna
-    countdownIntervalRef.current = setInterval(() => {
-      setTimerCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdownIntervalRef.current);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    // Set Timeout 5 detik setelah berhenti mengetik
     debounceTimerRef.current = setTimeout(() => {
       executeAutocompleteSearch(val.trim());
     }, DEBOUNCE_DELAY_MS);
   }
 
-  // Handling ketika saran tempat dipilih dari Autocomplete (New)
+  // Handling ketika saran tempat dipilih
   function handleSelectPlace(place) {
     const name = place.name;
     const reviewUrl =
@@ -180,19 +160,12 @@ export default function StoreSearchInput({
     setLoading(false);
   }
 
-  const isPlaceSelected = Boolean(linkMaps) && linkMaps.includes("placeid=ChIJ");
-
   return (
     <div ref={wrapperRef} className="space-y-2 relative">
       <div className="flex items-center justify-between">
         <label className="text-sm font-semibold text-slate-800">
           Cari Nama Toko / Tempat Google Maps
         </label>
-        {isPlaceSelected && (
-          <span className="text-[11px] font-semibold text-emerald-600 inline-flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Place ID Terhubung
-          </span>
-        )}
       </div>
 
       {/* Input Utama Autocomplete */}
@@ -200,7 +173,7 @@ export default function StoreSearchInput({
         <input
           type="text"
           className="input-field input-field-has-icon-left input-field-has-icon-right text-sm font-medium"
-          placeholder="Ketik nama toko (contoh: Kopi Senja Kediri)…"
+          placeholder="Ketik nama toko Anda…"
           value={inputValue}
           onChange={handleInputChange}
           onFocus={() => {
@@ -211,18 +184,8 @@ export default function StoreSearchInput({
           required
         />
         <Search className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
-          {loading && (
-            <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              {timerCountdown > 0 ? <span>Mencari dlm {timerCountdown}s…</span> : <span>Memuat…</span>}
-            </div>
-          )}
-          {!loading && (
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-1.5 py-0.5 rounded">
-              Autocomplete (New)
-            </span>
-          )}
+        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+          {loading && <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />}
         </div>
       </div>
 
@@ -232,11 +195,7 @@ export default function StoreSearchInput({
           {loading ? (
             <div className="p-4 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
-              {timerCountdown > 0 ? (
-                <span>Menunggu 5 detik setelah Anda berhenti mengetik ({timerCountdown}s)…</span>
-              ) : (
-                <span>Mengambil saran Autocomplete (New) dari Google…</span>
-              )}
+              <span>Mencari lokasi toko…</span>
             </div>
           ) : error ? (
             <div className="p-4 text-center text-xs text-amber-600 bg-amber-50/50 flex items-center justify-center gap-1.5">
@@ -246,7 +205,7 @@ export default function StoreSearchInput({
           ) : suggestions.length > 0 ? (
             <div>
               <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                Pilih Lokasi dari Google Places Autocomplete:
+                Pilih Lokasi Toko:
               </div>
               {suggestions.map((place, idx) => (
                 <button
@@ -274,7 +233,7 @@ export default function StoreSearchInput({
             </div>
           ) : (
             <div className="p-4 text-center text-xs text-slate-400">
-              Ketik minimal 2 karakter dan tunggu 5 detik untuk melihat daftar lokasi.
+              Ketik minimal 2 karakter untuk mencari lokasi.
             </div>
           )}
         </div>
@@ -305,7 +264,7 @@ export default function StoreSearchInput({
               onChange={(e) => onChangeLinkMaps(e.target.value)}
             />
             <p className="text-[11px] text-slate-400">
-              Otomatis dibuatkan link direct review saat memilih toko dari Autocomplete.
+              Otomatis dibuatkan link direct review saat memilih toko di atas.
             </p>
           </div>
         )}
