@@ -172,7 +172,7 @@ export default function StoreSearchInput({
       <div className="relative">
         <input
           type="text"
-          className="input-field input-field-has-icon-left input-field-has-icon-right text-sm font-medium"
+          className="input-field input-field-has-icon-left text-sm font-medium"
           placeholder="Ketik nama toko Anda…"
           value={inputValue}
           onChange={handleInputChange}
@@ -184,9 +184,6 @@ export default function StoreSearchInput({
           required
         />
         <Search className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-          {loading && <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />}
-        </div>
       </div>
 
       {/* DROPDOWN HASIL PREDIKSI AUTOCOMPLETE (NEW) */}
